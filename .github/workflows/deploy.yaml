@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 env:
-  IMAGE_NAME: your-dockerhub-username/web-app
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/web-app
   IMAGE_TAG: latest
 
 jobs:
@@ -26,6 +26,12 @@ jobs:
       run: |
         docker build -t $IMAGE_NAME:$IMAGE_TAG ./app
         docker push $IMAGE_NAME:$IMAGE_TAG
+
+    - name: Install kubectl
+      run: |
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        chmod +x kubectl
+        sudo mv kubectl /usr/local/bin/
 
     - name: Set up Kubeconfig
       run: |
